@@ -6,7 +6,7 @@ import {
     getChainDetailed,
     isChainIdValid,
     NetworkType,
-    FungibleAssetProvider,
+    PortfolioProvider,
     resolveAddressLinkOnExplorer,
     resolveBlockLinkOnExplorer,
     resolveChainColor,
@@ -33,27 +33,7 @@ export function fixWeb3State(state?: Web3Plugin.ObjectCapabilities.Capabilities,
         wallets: context.wallets,
     }
     state.Asset = state.Asset ?? {
-        getFungibleAssets: async (address, providerType, network, pagination) => {
-            if (!network) return []
-            const assets = await context.getAssetsList(
-                address,
-                providerType as unknown as FungibleAssetProvider,
-                network.type as unknown as NetworkType,
-            )
-            return assets.map((x) => ({
-                id: x.token.address,
-                chainId: x.token.chainId,
-                balance: x.balance,
-                price: x.price,
-                value: x.value,
-                logoURI: x.logoURI,
-                token: {
-                    ...x.token,
-                    id: x.token.address,
-                    chainId: x.token.chainId,
-                },
-            }))
-        },
+        getFungibleAssets: getFungibleAssetsFn(context),
     }
     state.Utils = state.Utils ?? {
         getChainDetailed,
