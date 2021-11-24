@@ -122,7 +122,7 @@ export declare namespace Web3Plugin {
 
     export interface NonFungibleToken extends Token {
         id: string
-        type: TokenType.Fungible
+        type: TokenType.NonFungible
         name: string
         description?: string
     }

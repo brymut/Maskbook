@@ -5,8 +5,6 @@ import {
     formatEthereumAddress,
     getChainDetailed,
     isChainIdValid,
-    NetworkType,
-    PortfolioProvider,
     resolveAddressLinkOnExplorer,
     resolveBlockLinkOnExplorer,
     resolveChainColor,
@@ -15,6 +13,7 @@ import {
     resolveTransactionLinkOnExplorer,
     Web3ProviderType,
 } from '@masknet/web3-shared-evm'
+import { getFungibleAssetsFn } from './getFungibleAssetsFn'
 
 export const Web3State: Web3Plugin.ObjectCapabilities.Capabilities = {}
 
