@@ -446,6 +446,8 @@ export async function getAsset(address: string, tokenId: string, chainId: ChainI
     const asset = await _getAsset(address, tokenId)
     if (!asset) return
 
+    console.log('-------------------------------')
+    console.log(asset)
     return createNFTAsset(asset, chainId)
 }
 

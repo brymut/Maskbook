@@ -2,7 +2,6 @@ import { unreachable } from '@dimensiondev/kit'
 import { BigNumber } from 'bignumber.js'
 import { head } from 'lodash-unified'
 import { useAsyncRetry } from 'react-use'
-import { OrderSide } from '../../EVM/types/NFT'
 import { getOrderUnitPrice } from '../../EVM/utils'
 import { PluginCollectibleRPC } from '../messages'
 import { CollectibleProvider, CollectibleToken } from '../types'
@@ -36,7 +35,7 @@ export function useAssetOrder(provider: CollectibleProvider, token?: Collectible
 
                 return desktopOrder
             case CollectibleProvider.RARIBLE:
-                return PluginCollectibleRPC.getOrderFromRarible(token.contractAddress, token.tokenId, OrderSide.Buy)
+                return
             default:
                 unreachable(provider)
         }

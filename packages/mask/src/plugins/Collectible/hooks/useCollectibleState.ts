@@ -11,11 +11,17 @@ function useCollectibleState(token?: CollectibleToken) {
 
     currentCollectibleProviderSettings.value = token?.provider ?? CollectibleProvider.OPENSEA
 
+    console.log('------------------------------')
+    console.log(token)
     //const provider = useValueRef(currentCollectibleProviderSettings)
-    const asset = useAsset(token?.contractAddress ?? '', token?.tokenId ?? '')
+    const asset = useAsset(
+        token?.contractAddress ?? '',
+        token?.tokenId ?? '',
+        token?.provider ?? CollectibleProvider.OPENSEA,
+    )
 
     //#region asset order from sdk
-    const assetOrder = useAssetOrder(provider, token)
+    const assetOrder = useAssetOrder(token?.provider ?? CollectibleProvider.OPENSEA, token)
     //#endregion
 
     //#region offers
@@ -48,7 +54,7 @@ function useCollectibleState(token?: CollectibleToken) {
     return {
         token,
         asset,
-        provider: token?.provider,
+        provider: token?.provider ?? CollectibleProvider.OPENSEA,
 
         assetOrder,
 
