@@ -201,7 +201,7 @@ function toRaribleImage(url?: string) {
     return `${RaribleIPFSURL}${url.replace('ipfs://ipfs/', '')}`
 }
 
-async function fetchFromRarible<T>(root: string, subPath: string, config = {} as RequestInit) {
+export async function fetchFromRarible<T>(root: string, subPath: string, config = {} as RequestInit) {
     const response = await (
         await fetch(urlcat(root, subPath), {
             mode: 'cors',
