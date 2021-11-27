@@ -20,10 +20,7 @@ export async function getAsset(
             asset = await NFTScanApi.getAsset(address, tokenId, chainId)
             return asset
         case CollectibleProvider.RARIBLE:
-            console.log('______________________=====')
-            console.log(provider)
             asset = await RaribleApi.getAsset(address, tokenId, chainId)
-            console.log(asset)
             return asset
         default:
             unreachable(provider)

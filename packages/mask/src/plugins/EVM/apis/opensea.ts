@@ -9,7 +9,7 @@ import {
 import BigNumber from 'bignumber.js'
 import { head, uniqBy } from 'lodash-unified'
 import urlcat from 'urlcat'
-import type { AssetCollection, AssetOrder, NFTAsset, NFTHistory } from '../types/NFT'
+import type { AssetCollection, AssetOrder, NFTAsset, NFTHistory, OrderSide } from '../types/NFT'
 import { getOrderUnitPrice, getOrderUSDPrice, toDate, toTokenDetailed } from '../utils'
 
 const OpenSeaAccountURL = 'https://opensea.io/accounts/'
@@ -468,7 +468,7 @@ async function fetchOrder(
     return orders
 }
 
-export async function getOrder(address: string, tokenId: string, side: number, chainId: ChainId) {
+export async function getOrder(address: string, tokenId: string, side: OrderSide, chainId: ChainId) {
     let orders: AssetOrder[] = []
 
     let page = 0

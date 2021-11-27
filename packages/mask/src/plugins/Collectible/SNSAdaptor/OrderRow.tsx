@@ -99,7 +99,11 @@ export function OrderRow({ order, isDifferenceToken }: IRowProps) {
                                     )}
                                 </Link>
                             ) : null}
-                            {`${order.current_price} ${order.payment_token_contract?.symbol}`}
+                            {`${getOrderUnitPrice(
+                                order.current_price,
+                                order.payment_token_contract?.decimals,
+                                order.quantity,
+                            )} ${order.payment_token_contract?.symbol}`}
                         </Typography>
                     </TableCell>
                     <TableCell>

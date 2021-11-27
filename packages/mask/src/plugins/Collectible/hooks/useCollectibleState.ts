@@ -11,8 +11,6 @@ function useCollectibleState(token?: CollectibleToken) {
 
     currentCollectibleProviderSettings.value = token?.provider ?? CollectibleProvider.OPENSEA
 
-    console.log('------------------------------')
-    console.log(token)
     //const provider = useValueRef(currentCollectibleProviderSettings)
     const asset = useAsset(
         token?.contractAddress ?? '',

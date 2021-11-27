@@ -8,9 +8,44 @@ import {
     isSameAddress,
 } from '@masknet/web3-shared-evm'
 import type { NFTAsset, OrderSide } from '../types/NFT'
-const NFTSCAN_TOKEN_ID = 'bcaa7c6850d2489e8cb0247e0abdce50'
-const CORS_PROXY = 'https://whispering-harbor-49523.herokuapp.com'
-const BASE_API = 'https://api.nftscan.com/api/v1'
+
+const NFTSCAN_ID = 't9k2o5GC'
+const NFTSCAN_SECRET = '21da1d638ef5d0bf76e37aa5c2da7fd789ade9e3'
+const NFTSCAN_URL = 'https://restapi.nftscan.com'
+const NFTSCAN_BASE_API = `${NFTSCAN_URL}/api/v1`
+
+let token: string = ''
+let token_expiration: number = 0
+
+async function getToken() {
+    const params = new URLSearchParams()
+    params.append('apiKey', NFTSCAN_ID)
+    params.append('apiSecret', NFTSCAN_SECRET)
+    const response = await fetch(`${NFTSCAN_URL}/gw/token?${params.toString()}`, {
+        mode: 'cors',
+    })
+
+    const { data }: { data: { accessToken: string; expiration: number } } = await response.json()
+    token = data.accessToken
+    token_expiration = Date.now() + data.expiration * 1000
+}
+
+async function fetchAsset(path: string, config = {} as RequestInit) {
+    if (token === '' || Date.now() > token_expiration) {
+        await getToken()
+    }
+    const response = await fetch(`${NFTSCAN_BASE_API}/${path}`, {
+        method: 'POST',
+        ...config,
+        headers: {
+            'Access-Token': token,
+        },
+    })
+
+    if (!response.ok) return
+
+    return response.json()
+}
 
 interface NFTScanAsset {
     last_price: string
@@ -55,28 +90,25 @@ function createERC721TokenAsset(asset: NFTScanAsset) {
 }
 
 async function getContractsAndBalance(address: string) {
-    const response = await fetch(`${CORS_PROXY}/${BASE_API}/getGroupByNftContract`, {
-        headers: {
-            'content-type': 'application/json',
-            Authorization: NFTSCAN_TOKEN_ID,
-        },
-        method: 'POST',
+    const response = await fetchAsset('getGroupByNftContract', {
         body: JSON.stringify({
             erc: 'erc721',
             user_address: address,
         }),
     })
+    if (!response) return null
 
-    if (!response.ok) return null
-
-    type NFTContractResponse = {
+    type NFT_Assets = {
         nft_asset: NFTScanAsset[]
         nft_asset_count: number
         nft_contract_address: string
+        nft_platform_count: number
+        nft_platform_describe: string
+        nft_platform_image: string
         nft_platform_name: string
     }
 
-    const { data }: { data: NFTContractResponse[] } = await response.json()
+    const { data }: { data: NFT_Assets[] } = response
 
     return data
         .map((x) => {
@@ -98,19 +130,15 @@ async function getContractsAndBalance(address: string) {
 }
 
 export async function getNFT(address: string, tokenId: string, chainId = ChainId.Mainnet) {
-    const response = await fetch(`${CORS_PROXY}/${BASE_API}/getSingleNft`, {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json',
-            Authorization: NFTSCAN_TOKEN_ID,
-        },
+    const response = await fetchAsset('getSingleNft', {
         body: JSON.stringify({
             nft_address: address,
             token_id: tokenId,
         }),
     })
-    if (!response.ok) return
-    const { data }: { data: NFTScanAsset } = await response.json()
+    if (!response) return null
+
+    const { data }: { data: NFTScanAsset } = response
 
     return createERC721TokenAsset(data)
 }
@@ -132,12 +160,8 @@ export async function getNFTs(from: string, chainId = ChainId.Mainnet) {
 
 export async function getNFTsPaged(from: string, opts: { chainId: ChainId; page?: number; size?: number }) {
     const { size = 50, page = 0 } = opts
-    const response = await fetch(`${CORS_PROXY}/${BASE_API}/getAllNftByUserAddress`, {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json',
-            Authorization: NFTSCAN_TOKEN_ID,
-        },
+
+    const response = await fetchAsset('getAllNftByUserAddress', {
         body: JSON.stringify({
             page_size: size,
             page_index: page,
@@ -145,11 +169,10 @@ export async function getNFTsPaged(from: string, opts: { chainId: ChainId; page?
             erc: 'erc721',
         }),
     })
-
-    if (!response.ok) return []
+    if (!response) return []
 
     const { data }: { data: { content: NFTScanAsset[]; page_index: number; page_size: number; total: number } } =
-        await response.json()
+        response
 
     return data.content.map((asset) => createERC721TokenAsset(asset))
 }

@@ -15,10 +15,8 @@ export function useAsset(address: string, token_id: string, provider: Collectibl
     const { WNATIVE_ADDRESS } = useTokenConstants()
 
     return useAsyncRetry(async () => {
-        console.log('111111')
         const asset = await EVM_RPC.getAsset(address, token_id, chainId, provider)
-        console.log(asset)
-        console.log('222222')
+
         return {
             ...asset,
             is_order_weth: isSameAddress(asset?.desktopOrder?.payment_token ?? '', WNATIVE_ADDRESS) ?? false,
