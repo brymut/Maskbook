@@ -1,12 +1,12 @@
 import type { Web3Plugin } from '@masknet/plugin-infra'
 import {
     ChainId,
-    CollectibleProvider,
     formatBalance,
     formatCurrency,
     formatEthereumAddress,
     getChainDetailed,
     isChainIdValid,
+    NonFungibleAssetProvider,
     resolveAddressLinkOnExplorer,
     resolveBlockLinkOnExplorer,
     resolveChainColor,
@@ -54,7 +54,7 @@ export function fixWeb3State(state?: Web3Plugin.ObjectCapabilities.Capabilities,
         resolveAddressLink: resolveAddressLinkOnExplorer,
         resolveBlockLink: resolveBlockLinkOnExplorer,
         resolveCollectibleLink: (chainId: number, address: string, tokenId: string) =>
-            resolveCollectibleLink(chainId as ChainId, CollectibleProvider.OPENSEA, {
+            resolveCollectibleLink(chainId as ChainId, NonFungibleAssetProvider.OPENSEA, {
                 contractDetailed: { address: address },
                 tokenId: tokenId,
             } as unknown as any),
