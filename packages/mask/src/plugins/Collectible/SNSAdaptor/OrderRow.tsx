@@ -8,9 +8,8 @@ import { ChainId, formatBalance, isZero, resolveAddressLinkOnExplorer } from '@m
 import { CollectibleState } from '../hooks/useCollectibleState'
 import { Account } from './Account'
 import { FormattedBalance } from '@masknet/shared'
-
-import { getOrderUnitPrice } from '../../EVM/utils'
-import type { AssetOrder } from '../../EVM/types/NFT'
+import { getOrderUnitPrice } from '@masknet/web3-providers/utils'
+import type { AssetOrder } from '@masknet/web3-providers/types'
 
 const useStyles = makeStyles()((theme) => {
     return {

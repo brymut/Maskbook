@@ -1,7 +1,8 @@
 import { ChainId, CollectibleProvider } from '@masknet/web3-shared-evm'
-import * as OpenSeaApi from '../../apis/opensea'
-import * as NFTScanApi from '../../apis/nftscan'
-import * as RaribleApi from '../../apis/rarible'
+import * as OpenSeaApi from '@masknet/web3-providers/opensea'
+import * as NFTScanApi from '@masknet/web3-providers/NFTScan'
+import * as RaribleApi from '@masknet/web3-providers/rarible'
+
 import { unreachable } from '@dimensiondev/kit'
 import { currentCollectibleDataProviderSettings } from '../../../Wallet/settings'
 

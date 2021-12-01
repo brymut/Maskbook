@@ -1,1 +1,1 @@
-export * from './NFT'
+export {}

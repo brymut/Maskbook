@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { isNull } from 'lodash-unified'
 import { ChainId } from '@masknet/web3-shared-evm'
 import { EVM_RPC } from '../../EVM/messages'
-import { getOrderUnitPrice } from '../../EVM/utils'
+import { getOrderUnitPrice } from '@masknet/web3-providers/utils'
 
 export async function getNFT(address: string, tokenId: string) {
     const asset = await EVM_RPC.getAsset(address, tokenId, ChainId.Mainnet)

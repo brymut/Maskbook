@@ -1,8 +1,8 @@
 import { unreachable } from '@dimensiondev/kit'
+import { getOrderUnitPrice } from '@masknet/web3-providers/utils'
 import { BigNumber } from 'bignumber.js'
 import { head } from 'lodash-unified'
 import { useAsyncRetry } from 'react-use'
-import { getOrderUnitPrice } from '../../EVM/utils'
 import { PluginCollectibleRPC } from '../messages'
 import { CollectibleProvider, CollectibleToken } from '../types'
 

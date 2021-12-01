@@ -1,6 +1,6 @@
 import { unreachable } from '@dimensiondev/kit'
 import { CollectibleProvider } from '@masknet/web3-shared-evm'
-import * as OpenSeaApi from '../../apis/opensea'
+import * as OpenSeaApi from '@masknet/web3-providers/opensea'
 import { currentChainIdSettings, currentCollectibleDataProviderSettings } from '../../../Wallet/settings'
 
 export async function getNFTContract(contractAddress: string, chainId = currentChainIdSettings.value) {

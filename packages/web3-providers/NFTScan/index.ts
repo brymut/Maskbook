@@ -1,18 +1,15 @@
+import { NFTSCAN_BASE_API, NFTSCAN_ID, NFTSCAN_SECRET, NFTSCAN_URL } from './constants'
+import type { NFTScanAsset, NFT_Assets } from './types'
 import {
-    ChainId,
     createERC721ContractDetailed,
+    ChainId,
     createERC721Token,
     ERC721ContractDetailed,
-    ERC721TokenDetailed,
     EthereumTokenType,
+    ERC721TokenDetailed,
     isSameAddress,
 } from '@masknet/web3-shared-evm'
-import type { NFTAsset, OrderSide } from '../types/NFT'
-
-const NFTSCAN_ID = 't9k2o5GC'
-const NFTSCAN_SECRET = '21da1d638ef5d0bf76e37aa5c2da7fd789ade9e3'
-const NFTSCAN_URL = 'https://restapi.nftscan.com'
-const NFTSCAN_BASE_API = `${NFTSCAN_URL}/api/v1`
+import type { NFTAsset, OrderSide } from '../types'
 
 let token: string = ''
 let token_expiration: number = 0
@@ -47,25 +44,6 @@ async function fetchAsset(path: string, config = {} as RequestInit) {
     return response.json()
 }
 
-interface NFTScanAsset {
-    last_price: string
-    nft_asset_id: string
-    nft_content_uri: string
-    nft_cover: string
-    nft_create_hash: string
-    nft_create_time: string
-    nft_creator: string
-    nft_detail: string
-    nft_holder: string
-    nft_json: string
-    nft_value: string
-    token_id: string
-
-    trade_contract: string
-    trade_symbol: string
-    trade_decimal: string
-}
-
 function createERC721ContractDetailedFromAssetContract(asset: NFTScanAsset) {
     return createERC721ContractDetailed(
         ChainId.Mainnet,
@@ -97,16 +75,6 @@ async function getContractsAndBalance(address: string) {
         }),
     })
     if (!response) return null
-
-    type NFT_Assets = {
-        nft_asset: NFTScanAsset[]
-        nft_asset_count: number
-        nft_contract_address: string
-        nft_platform_count: number
-        nft_platform_describe: string
-        nft_platform_image: string
-        nft_platform_name: string
-    }
 
     const { data }: { data: NFT_Assets[] } = response
 
@@ -140,7 +108,7 @@ export async function getNFT(address: string, tokenId: string, chainId = ChainId
 
     const { data }: { data: NFTScanAsset } = response
 
-    return createERC721TokenAsset(data)
+    return data
 }
 
 export async function getNFTs(from: string, chainId = ChainId.Mainnet) {
