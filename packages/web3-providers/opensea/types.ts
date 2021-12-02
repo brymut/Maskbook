@@ -61,7 +61,7 @@ interface OpenSeaCustomAccount {
     }
 }
 
-interface OpenSeaCollection extends OpenSeaFees {
+export interface OpenSeaCollection extends OpenSeaFees {
     name: string
     slug: string
     editors: string[]

@@ -43,14 +43,10 @@ export async function getCollectionsNFT(
     size?: number,
 ): Promise<{ collections: ERC721TokenCollectionInfo[]; hasNextPage: boolean }> {
     if (provider === NonFungibleAssetProvider.OPENSEA) {
-        const { collections } = await OpenSeaAPI.getCollections(address, { chainId, page, size })
+        const { collections } = await EVM_RPC.getCollections(address, { chainId, page, size })
 
         return {
-            collections: collections.map((x) => ({
-                name: x.name,
-                image: x.image_url || undefined,
-                slug: x.slug,
-            })),
+            collections,
             hasNextPage: collections.length === size,
         }
     }

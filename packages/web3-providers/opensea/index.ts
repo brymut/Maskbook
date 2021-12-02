@@ -6,8 +6,8 @@ import {
     EthereumTokenType,
     isSameAddress,
 } from '@masknet/web3-shared-evm'
-import { OpenSeaAccountURL } from './constants'
-import type { OpenSeaAssetContract, OpenSeaAssetEvent, OpenSeaResponse } from './types'
+import { OpenSeaAccountURL, OpenSea_API_URL } from './constants'
+import type { OpenSeaAssetContract, OpenSeaAssetEvent, OpenSeaResponse, OpenSeaCollection } from './types'
 import urlcat from 'urlcat'
 import { head, uniqBy } from 'lodash-unified'
 import type { AssetCollection, AssetOrder, NFTAsset, NFTHistory, OrderSide } from '../types'
@@ -34,10 +34,7 @@ export async function getNFTsPaged(from: string, opts: { chainId?: ChainId; page
     params.append('limit', String(size))
     params.append('offset', String(size * page))
 
-    const asset = await fetchAsset(
-        `https://${chainId === ChainId.Mainnet ? 'api' : 'rinkeby-api'}.opensea.io/api/v1/assets?${params.toString()}`,
-        chainId,
-    )
+    const asset = await fetchAsset(`${OpenSea_API_URL}/api/v1/assets?${params.toString()}`, chainId)
     if (!asset) return []
 
     return asset.assets.map((asset: OpenSeaResponse) => createERC721TokenAsset(from, asset.token_id, chainId, asset))
@@ -66,20 +63,14 @@ function createERC721TokenAsset(address: string, tokenId: string, chainId: Chain
 
 async function _getAsset(address: string, tokenId: string, chainId: ChainId) {
     const asset = (await fetchAsset(
-        urlcat(
-            `https://${chainId === ChainId.Mainnet ? 'api' : 'rinkeby-api'}.opensea.io/api/v1/asset/:address/:tokenId`,
-            { address, tokenId },
-        ),
+        urlcat(`${OpenSea_API_URL}/api/v1/asset/:address/:tokenId`, { address, tokenId }),
         chainId,
     )) as OpenSeaResponse
     return asset
 }
 
 export async function getContract(address: string, chainId = ChainId.Mainnet) {
-    const assetContract = await fetchAsset(
-        `https://${chainId === ChainId.Mainnet ? 'api' : 'rinkeby-api'}.opensea.io/api/v1/asset_contract/${address}`,
-        chainId,
-    )
+    const assetContract = await fetchAsset(`${OpenSea_API_URL}/api/v1/asset_contract/${address}`, chainId)
 
     return createERC721ContractDetailedFromAssetContract(address, chainId, assetContract)
 }
@@ -189,14 +180,9 @@ export async function getHistory(address: string, tokenId: string, chainId: Chai
     params.append('limit', '100')
 
     const fetchResponse = await (
-        await fetch(
-            `https://${
-                chainId === ChainId.Mainnet ? 'api' : 'rinkeby-api'
-            }.opensea.io/api/v1/events?${params.toString()}`,
-            {
-                mode: 'cors',
-            },
-        )
+        await fetch(`${OpenSea_API_URL}/api/v1/events?${params.toString()}`, {
+            mode: 'cors',
+        })
     ).json()
 
     const { asset_events }: { asset_events: OpenSeaAssetEvent[] } = fetchResponse
@@ -271,7 +257,7 @@ async function fetchOrder(
     params.append('offset', page.toString())
     params.append('limit', size.toString())
     const response = await (
-        await fetch(`https://api.opensea.io/wyvern/v1/orders?${params.toString()}`, {
+        await fetch(`${OpenSea_API_URL}/wyvern/v1/orders?${params.toString()}`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -297,4 +283,20 @@ export async function getOrder(address: string, tokenId: string, side: OrderSide
     } while (order.length === size)
 
     return orders
+}
+
+export async function getCollections(address: string, opts: { chainId: ChainId; page?: number; size?: number }) {
+    const params = new URLSearchParams()
+    params.append('offset', `${opts.page ?? '0'}`)
+    params.append('limit', `${opts.size ?? '50'}`)
+
+    const { collections }: { collections: OpenSeaCollection[] } = await (
+        await fetch(`${OpenSea_API_URL}/api/v1/collections?${params.toString()}`)
+    ).json()
+
+    return collections.map((x) => ({
+        name: x.name,
+        image: x.image_url || undefined,
+        slug: x.slug,
+    }))
 }
