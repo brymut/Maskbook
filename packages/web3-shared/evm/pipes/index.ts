@@ -135,9 +135,9 @@ export function resolveCollectibleProviderLink(chainId: ChainId, provider: NonFu
         case NonFungibleAssetProvider.OPENSEA:
             if (chainId === ChainId.Rinkeby) return `https://testnets.opensea.io`
             return `https://opensea.io`
-        case CollectibleProvider.NFTSCAN:
+        case NonFungibleAssetProvider.NFTSCAN:
             return `https://nftscan.com`
-        case CollectibleProvider.RARIBLE:
+        case NonFungibleAssetProvider.RARIBLE:
             return `https://rarible.com`
         default:
             unreachable(provider)
@@ -150,9 +150,9 @@ export function resolveCollectibleAssetLink(chainId: ChainId, provider: NonFungi
             if (chainId === ChainId.Rinkeby) return `https://testnets.opensea.io/assets`
             if (chainId === ChainId.Matic) return `https://opensea.io/assets/matic`
             return `https://opensea.io/assets`
-        case CollectibleProvider.NFTSCAN:
+        case NonFungibleAssetProvider.NFTSCAN:
             return `https://nftscan.com/search`
-        case CollectibleProvider.RARIBLE:
+        case NonFungibleAssetProvider.RARIBLE:
             return 'https://rarible.com/token'
         default:
             unreachable(provider)
@@ -165,13 +165,13 @@ export function resolveCollectibleLink(
     { contractDetailed: { address }, tokenId }: ERC721TokenDetailed,
 ) {
     switch (provider) {
-        case CollectibleProvider.OPENSEA:
-        case CollectibleProvider.NFTSCAN:
+        case NonFungibleAssetProvider.OPENSEA:
+        case NonFungibleAssetProvider.NFTSCAN:
             return urlcat(resolveCollectibleAssetLink(chainId, provider), '/:address/:tokenId', {
                 address,
                 tokenId,
             })
-        case CollectibleProvider.RARIBLE:
+        case NonFungibleAssetProvider.RARIBLE:
             return urlcat(resolveCollectibleAssetLink(chainId, provider), '/:address::tokenId', {
                 address,
                 tokenId,

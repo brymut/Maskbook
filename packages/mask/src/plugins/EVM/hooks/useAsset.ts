@@ -1,6 +1,6 @@
 import { useAsyncRetry } from 'react-use'
 import {
-    CollectibleProvider,
+    NonFungibleAssetProvider,
     currySameAddress,
     isSameAddress,
     useAccount,
@@ -9,7 +9,7 @@ import {
 } from '@masknet/web3-shared-evm'
 import { EVM_RPC } from '../messages'
 
-export function useAsset(address: string, token_id: string, provider: CollectibleProvider) {
+export function useAsset(address: string, token_id: string, provider: NonFungibleAssetProvider) {
     const account = useAccount()
     const chainId = useChainId()
     const { WNATIVE_ADDRESS } = useTokenConstants()

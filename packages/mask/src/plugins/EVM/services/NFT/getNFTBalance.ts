@@ -1,22 +1,26 @@
-import { ChainId, CollectibleProvider } from '@masknet/web3-shared-evm'
+import { NonFungibleAssetProvider } from '@masknet/web3-shared-evm'
 import * as OpenSeaApi from '@masknet/web3-providers/opensea'
 import * as NFTScanApi from '@masknet/web3-providers/NFTScan'
 import * as RaribleApi from '@masknet/web3-providers/rarible'
 
 import { unreachable } from '@dimensiondev/kit'
-import { currentCollectibleDataProviderSettings } from '../../../Wallet/settings'
+import { currentChainIdSettings } from '../../../Wallet/settings'
 
-export async function getNFTBalance(address: string, contract_address: string, chainId: ChainId) {
-    const provider = currentCollectibleDataProviderSettings.value
+export async function getNFTBalance(
+    address: string,
+    contract_address: string,
+    chainId = currentChainIdSettings.value,
+    provider = NonFungibleAssetProvider.OPENSEA,
+) {
     let balance
     switch (provider) {
-        case CollectibleProvider.OPENSEA:
+        case NonFungibleAssetProvider.OPENSEA:
             balance = await OpenSeaApi.getContractBalance(address, contract_address, chainId)
             return balance
-        case CollectibleProvider.NFTSCAN:
+        case NonFungibleAssetProvider.NFTSCAN:
             balance = await NFTScanApi.getContractBalance(address, contract_address, chainId)
             return balance
-        case CollectibleProvider.RARIBLE:
+        case NonFungibleAssetProvider.RARIBLE:
             balance = await RaribleApi.getContractBalance(address, contract_address, chainId)
             return balance
         default:

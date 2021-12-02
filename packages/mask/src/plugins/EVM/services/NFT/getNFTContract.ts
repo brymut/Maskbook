@@ -1,16 +1,19 @@
 import { unreachable } from '@dimensiondev/kit'
-import { CollectibleProvider } from '@masknet/web3-shared-evm'
+import { NonFungibleAssetProvider } from '@masknet/web3-shared-evm'
 import * as OpenSeaApi from '@masknet/web3-providers/opensea'
-import { currentChainIdSettings, currentCollectibleDataProviderSettings } from '../../../Wallet/settings'
+import { currentChainIdSettings } from '../../../Wallet/settings'
 
-export async function getNFTContract(contractAddress: string, chainId = currentChainIdSettings.value) {
-    const provider = currentCollectibleDataProviderSettings.value
+export async function getNFTContract(
+    contractAddress: string,
+    chainId = currentChainIdSettings.value,
+    provider = NonFungibleAssetProvider.OPENSEA,
+) {
     switch (provider) {
-        case CollectibleProvider.OPENSEA:
-        case CollectibleProvider.NFTSCAN:
+        case NonFungibleAssetProvider.OPENSEA:
+        case NonFungibleAssetProvider.NFTSCAN:
             const assetContract = await OpenSeaApi.getContract(contractAddress, chainId)
             return assetContract
-        case CollectibleProvider.RARIBLE:
+        case NonFungibleAssetProvider.RARIBLE:
             return
         default:
             unreachable(provider)

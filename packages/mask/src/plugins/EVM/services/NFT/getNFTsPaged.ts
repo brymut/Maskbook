@@ -3,20 +3,25 @@ import * as NFTScanApi from '@masknet/web3-providers/NFTScan'
 import * as RaribleApi from '@masknet/web3-providers/rarible'
 
 import { unreachable } from '@dimensiondev/kit'
-import { ChainId, CollectibleProvider } from '@masknet/web3-shared-evm'
-import { currentCollectibleDataProviderSettings } from '../../../Wallet/settings'
+import { NonFungibleAssetProvider } from '@masknet/web3-shared-evm'
+import { currentChainIdSettings } from '../../../Wallet/settings'
 
-export async function getNFTsPaged(from: string, chainId: ChainId, page?: number, size?: number) {
-    const provider = currentCollectibleDataProviderSettings.value
+export async function getNFTsPaged(
+    from: string,
+    chainId = currentChainIdSettings.value,
+    provider = NonFungibleAssetProvider.OPENSEA,
+    page?: number,
+    size?: number,
+) {
     let assets
     switch (provider) {
-        case CollectibleProvider.OPENSEA:
+        case NonFungibleAssetProvider.OPENSEA:
             assets = await OpenSeaApi.getNFTsPaged(from, { chainId, page, size })
             return assets
-        case CollectibleProvider.NFTSCAN:
+        case NonFungibleAssetProvider.NFTSCAN:
             assets = await NFTScanApi.getNFTsPaged(from, { chainId, page, size })
             return assets
-        case CollectibleProvider.RARIBLE:
+        case NonFungibleAssetProvider.RARIBLE:
             assets = await RaribleApi.getNFTsPaged(from, { chainId, page, size })
             return assets
         default:

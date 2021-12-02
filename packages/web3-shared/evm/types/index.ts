@@ -519,7 +519,7 @@ export enum FungibleAssetProvider {
     DEBANK = 'Debank',
 }
 
-export enum CollectibleProvider {
+export enum NonFungibleAssetProvider {
     OPENSEA = 0,
     RARIBLE = 1,
     NFTSCAN = 2,

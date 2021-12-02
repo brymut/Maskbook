@@ -3,20 +3,23 @@ import * as NFTScanApi from '@masknet/web3-providers/NFTScan'
 import * as RaribleApi from '@masknet/web3-providers/rarible'
 
 import { unreachable } from '@dimensiondev/kit'
-import { CollectibleProvider } from '@masknet/web3-shared-evm'
-import { currentChainIdSettings, currentCollectibleDataProviderSettings } from '../../../Wallet/settings'
+import { NonFungibleAssetProvider } from '@masknet/web3-shared-evm'
+import { currentChainIdSettings } from '../../../Wallet/settings'
 
-export async function getNFTs(from: string, chainId = currentChainIdSettings.value) {
-    const provider = currentCollectibleDataProviderSettings.value
+export async function getNFTs(
+    from: string,
+    chainId = currentChainIdSettings.value,
+    provider = NonFungibleAssetProvider.OPENSEA,
+) {
     let tokens
     switch (provider) {
-        case CollectibleProvider.OPENSEA:
+        case NonFungibleAssetProvider.OPENSEA:
             tokens = await OpenSeaApi.getNFTs(from, chainId)
             return tokens
-        case CollectibleProvider.NFTSCAN:
+        case NonFungibleAssetProvider.NFTSCAN:
             tokens = await NFTScanApi.getNFTs(from)
             return tokens
-        case CollectibleProvider.RARIBLE:
+        case NonFungibleAssetProvider.RARIBLE:
             tokens = await RaribleApi.getNFTs(from, chainId)
             return tokens
         default:
