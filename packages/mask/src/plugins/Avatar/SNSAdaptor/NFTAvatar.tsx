@@ -78,6 +78,7 @@ const useStyles = makeStyles()((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
+        marginTop: theme.spacing(1),
     },
 }))
 
@@ -174,7 +175,7 @@ export function NFTAvatar(props: NFTAvatarProps) {
                                               token={token}
                                               key={i}
                                               selectedToken={selectedToken}
-                                              onChange={(token) => setSelectedToken(token)}
+                                              onChange={setSelectedToken}
                                           />
                                       ))}
                         </Box>

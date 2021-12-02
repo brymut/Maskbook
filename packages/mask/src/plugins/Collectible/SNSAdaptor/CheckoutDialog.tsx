@@ -11,7 +11,6 @@ import {
     Link,
 } from '@mui/material'
 import { makeStyles } from '@masknet/theme'
-import { useCustomSnackbar } from '@masknet/theme'
 import { Trans } from 'react-i18next'
 import { useAccount } from '@masknet/web3-shared-evm'
 import { InjectedDialog } from '../../../components/shared/InjectedDialog'
@@ -68,7 +67,6 @@ export function CheckoutDialog(props: CheckoutDialogProps) {
 
     const { t } = useI18N()
     const { classes } = useStyles()
-    const { showSnackbar } = useCustomSnackbar()
 
     const account = useAccount()
 

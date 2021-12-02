@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useCustomSnackbar } from '@masknet/theme'
 import { Card, CardActions, CardContent } from '@mui/material'
 import { makeStyles } from '@masknet/theme'
 import {
@@ -53,7 +52,6 @@ export function ListingByHighestBidCard(props: ListingByHighestBidCardProps) {
 
     const { t } = useI18N()
     const { classes } = useStyles()
-    const { showSnackbar } = useCustomSnackbar()
 
     const account = useAccount()
 

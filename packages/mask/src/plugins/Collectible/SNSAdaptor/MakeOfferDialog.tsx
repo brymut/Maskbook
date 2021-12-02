@@ -12,7 +12,6 @@ import {
 } from '@mui/material'
 import { makeStyles } from '@masknet/theme'
 import { first } from 'lodash-unified'
-import { useCustomSnackbar } from '@masknet/theme'
 import BigNumber from 'bignumber.js'
 import {
     FungibleTokenDetailed,
@@ -79,7 +78,6 @@ export function MakeOfferDialog(props: MakeOfferDialogProps) {
 
     const { t } = useI18N()
     const { classes } = useStyles()
-    const { showSnackbar } = useCustomSnackbar()
 
     const account = useAccount()
 

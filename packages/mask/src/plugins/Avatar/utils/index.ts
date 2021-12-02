@@ -27,6 +27,19 @@ export async function createNFT(address: string, tokenId: string) {
     return nft
 }
 
+export async function getImage(image: string): Promise<string> {
+    const blob = await Services.Helper.fetch(image)
+    return (await blobToBase64(blob)) as string
+}
+
+function blobToBase64(blob: Blob) {
+    return new Promise((resolve, _) => {
+        const reader = new FileReader()
+        reader.onloadend = () => resolve(reader.result)
+        reader.readAsDataURL(blob)
+    })
+}
+
 export function toPNG(image: string) {
     return new Promise<Blob | null>((resolve, reject) => {
         const img = new Image()
