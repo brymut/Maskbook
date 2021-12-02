@@ -122,7 +122,8 @@ export function ConnectWalletDialog(props: ConnectWalletDialogProps) {
                 // recheck
                 const chainIdHex = await Services.Ethereum.getChainId(overrides)
                 if (Number.parseInt(chainIdHex, 16) !== expectedChainId) throw new Error('Failed to switch chain.')
-            } catch {
+            } catch (err) {
+                console.log({ err })
                 throw new Error(`Make sure your wallet is on the ${resolveNetworkName(networkType)} network.`)
             }
         }
