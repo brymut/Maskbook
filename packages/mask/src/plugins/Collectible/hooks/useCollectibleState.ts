@@ -2,24 +2,25 @@ import { useRef, useState } from 'react'
 import { createContainer } from 'unstated-next'
 import { OrderSide } from 'opensea-js/lib/types'
 import { currentCollectibleProviderSettings } from '../settings'
-import { CollectibleProvider, CollectibleTab, CollectibleToken } from '../types'
+import { CollectibleTab, CollectibleToken } from '../types'
 import { useAsset, useHistory, useOrders } from '../../EVM/hooks'
 import { useAssetOrder } from './useAssetOrder'
+import { NonFungibleAssetProvider } from '@masknet/web3-shared-evm/types'
 
 function useCollectibleState(token?: CollectibleToken) {
     const [tabIndex, setTabIndex] = useState(CollectibleTab.ARTICLE)
 
-    currentCollectibleProviderSettings.value = token?.provider ?? CollectibleProvider.OPENSEA
+    currentCollectibleProviderSettings.value = token?.provider ?? NonFungibleAssetProvider.OPENSEA
 
     //const provider = useValueRef(currentCollectibleProviderSettings)
     const asset = useAsset(
         token?.contractAddress ?? '',
         token?.tokenId ?? '',
-        token?.provider ?? CollectibleProvider.OPENSEA,
+        token?.provider ?? NonFungibleAssetProvider.OPENSEA,
     )
 
     //#region asset order from sdk
-    const assetOrder = useAssetOrder(token?.provider ?? CollectibleProvider.OPENSEA, token)
+    const assetOrder = useAssetOrder(token?.provider ?? NonFungibleAssetProvider.OPENSEA, token)
     //#endregion
 
     //#region offers
@@ -52,7 +53,7 @@ function useCollectibleState(token?: CollectibleToken) {
     return {
         token,
         asset,
-        provider: token?.provider ?? CollectibleProvider.OPENSEA,
+        provider: token?.provider ?? NonFungibleAssetProvider.OPENSEA,
 
         assetOrder,
 

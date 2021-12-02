@@ -1,7 +1,7 @@
+import { OrderSide } from '@masknet/web3-providers/types'
 import { useChainId } from '@masknet/web3-shared-evm'
 import { useAsyncRetry } from 'react-use'
 import { EVM_RPC } from '../messages'
-import { OrderSide } from '../types/NFT'
 
 export function useOrders(address?: string, tokenId?: string, side?: OrderSide) {
     const chainId = useChainId()

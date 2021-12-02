@@ -10,7 +10,7 @@ import {
     Typography,
     Link,
 } from '@mui/material'
-import { makeStyles } from '@masknet/theme'
+import { makeStyles, useCustomSnackbar } from '@masknet/theme'
 import { first } from 'lodash-unified'
 import BigNumber from 'bignumber.js'
 import {
@@ -75,7 +75,7 @@ export function MakeOfferDialog(props: MakeOfferDialogProps) {
     const isVerified = asset?.value?.is_verified ?? false
     const paymentTokens = (isAuction ? asset?.value?.order_payment_tokens : asset?.value?.offer_payment_tokens) ?? []
     const selectedPaymentToken = first(paymentTokens)
-
+    const { showSnackbar } = useCustomSnackbar()
     const { t } = useI18N()
     const { classes } = useStyles()
 

@@ -108,7 +108,7 @@ export async function getNFT(address: string, tokenId: string, chainId = ChainId
 
     const { data }: { data: NFTScanAsset } = response
 
-    return data
+    return createERC721TokenAsset(data)
 }
 
 export async function getNFTs(from: string, chainId = ChainId.Mainnet) {

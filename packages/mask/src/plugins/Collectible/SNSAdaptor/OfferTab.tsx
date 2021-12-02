@@ -7,9 +7,8 @@ import { CollectibleState } from '../hooks/useCollectibleState'
 import { CollectibleTab } from './CollectibleTab'
 import { OrderRow } from './OrderRow'
 import { TableListPagination } from './Pagination'
-import { CollectibleProvider } from '../types'
 import { LoadingTable } from './LoadingTable'
-import { isZero } from '@masknet/web3-shared-evm'
+import { isZero, NonFungibleAssetProvider } from '@masknet/web3-shared-evm'
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -42,7 +41,7 @@ export function OfferTab() {
     const { asset, provider, offers, offerPage, setOfferPage } = CollectibleState.useContainer()
 
     const isDifferenceToken = useMemo(() => {
-        if (provider === CollectibleProvider.OPENSEA) {
+        if (provider === NonFungibleAssetProvider.OPENSEA) {
             return (
                 offers.value?.some(
                     (item) =>
@@ -105,7 +104,7 @@ export function OfferTab() {
                         ) : (
                             <>
                                 <TableCell>{t('plugin_collectible_price')}</TableCell>
-                                {provider === CollectibleProvider.OPENSEA ? (
+                                {provider === NonFungibleAssetProvider.OPENSEA ? (
                                     <TableCell>{t('plugin_collectible_expiration')}</TableCell>
                                 ) : null}
                             </>
@@ -117,7 +116,7 @@ export function OfferTab() {
                         <OrderRow key={order.order_hash} order={order} isDifferenceToken={isDifferenceToken} />
                     ))}
                 </TableBody>
-                {(provider === CollectibleProvider.OPENSEA && dataSource.length) || offerPage > 0 ? (
+                {(provider === NonFungibleAssetProvider.OPENSEA && dataSource.length) || offerPage > 0 ? (
                     <TableListPagination
                         handlePrevClick={() => setOfferPage((prev) => prev - 1)}
                         handleNextClick={() => setOfferPage((prev) => prev + 1)}

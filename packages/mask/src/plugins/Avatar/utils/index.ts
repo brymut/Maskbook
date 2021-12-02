@@ -3,6 +3,7 @@ import { isNull } from 'lodash-unified'
 import { ChainId } from '@masknet/web3-shared-evm'
 import { EVM_RPC } from '../../EVM/messages'
 import { getOrderUnitPrice } from '@masknet/web3-providers/utils'
+import Services from '../../../extension/service'
 
 export async function getNFT(address: string, tokenId: string) {
     const asset = await EVM_RPC.getAsset(address, tokenId, ChainId.Mainnet)

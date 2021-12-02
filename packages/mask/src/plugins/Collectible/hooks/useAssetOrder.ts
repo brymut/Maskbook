@@ -1,16 +1,17 @@
 import { unreachable } from '@dimensiondev/kit'
 import { getOrderUnitPrice } from '@masknet/web3-providers/utils'
+import { NonFungibleAssetProvider } from '@masknet/web3-shared-evm'
 import { BigNumber } from 'bignumber.js'
 import { head } from 'lodash-unified'
 import { useAsyncRetry } from 'react-use'
 import { PluginCollectibleRPC } from '../messages'
-import { CollectibleProvider, CollectibleToken } from '../types'
+import type { CollectibleToken } from '../types'
 
-export function useAssetOrder(provider: CollectibleProvider, token?: CollectibleToken) {
+export function useAssetOrder(provider: NonFungibleAssetProvider, token?: CollectibleToken) {
     return useAsyncRetry(async () => {
         if (!token) return
         switch (provider) {
-            case CollectibleProvider.OPENSEA:
+            case NonFungibleAssetProvider.OPENSEA:
                 const openSeaResponse = await PluginCollectibleRPC.getAssetFromSDK(token.contractAddress, token.tokenId)
 
                 const desktopOrder = head(
@@ -34,7 +35,9 @@ export function useAssetOrder(provider: CollectibleProvider, token?: Collectible
                 )
 
                 return desktopOrder
-            case CollectibleProvider.RARIBLE:
+            case NonFungibleAssetProvider.RARIBLE:
+                return
+            case NonFungibleAssetProvider.NFTSCAN:
                 return
             default:
                 unreachable(provider)
