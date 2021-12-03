@@ -17,13 +17,14 @@ import { FormattedAddress, useRemoteControlledDialog, useSnackbarCallback, Walle
 import { WalletMessages } from '../../plugins/Wallet/messages'
 import { useI18N } from '../../utils'
 import Services from '../../extension/service'
+import { ActionButtonPromise } from '../../extension/options-page/DashboardComponents/ActionButton'
 
 const useStyles = makeStyles()((theme) => ({
     content: {
         padding: theme.spacing(2, 3, 3),
     },
     currentAccount: {
-        padding: theme.spacing(2, 3),
+        padding: theme.spacing(1.5),
         marginBottom: theme.spacing(2),
         display: 'flex',
         backgroundColor: getMaskColor(theme).twitterBackground,
@@ -41,6 +42,7 @@ const useStyles = makeStyles()((theme) => ({
     accountName: {
         fontSize: 16,
         marginRight: 6,
+        marginBottom: 6,
     },
     infoRow: {
         display: 'flex',
@@ -65,8 +67,14 @@ const useStyles = makeStyles()((theme) => ({
     linkIcon: {
         marginRight: theme.spacing(1),
     },
-    networkIcon: {},
-    providerIcon: {},
+    dashboardProvider: {
+        border: `1px solid ${theme.palette.background.default}`,
+    },
+    twitterProviderBorder: {
+        border: `1px solid ${getMaskColor(theme).twitterBackground}`,
+        width: 14,
+        height: 14,
+    },
     connectButtonWrapper: {
         display: 'flex',
         justifyContent: 'center',
@@ -117,12 +125,18 @@ export function WalletStatusBox(props: WalletStatusBox) {
     //#endregion
 
     const onDisconnect = useCallback(async () => {
-        if (providerType !== ProviderType.WalletConnect) return
-        setWalletConnectDialog({
-            open: true,
-            uri: await Services.Ethereum.createConnectionURI(),
-        })
-    }, [providerType, setWalletConnectDialog])
+        switch (providerType) {
+            case ProviderType.WalletConnect:
+                setWalletConnectDialog({
+                    open: true,
+                    uri: await Services.Ethereum.createConnectionURI(),
+                })
+                break
+            case ProviderType.Fortmatic:
+                await Services.Ethereum.disconnectFortmatic(chainId)
+                break
+        }
+    }, [chainId, providerType, setWalletConnectDialog])
 
     const onChange = useCallback(() => {
         openSelectProviderDialog()
@@ -131,14 +145,13 @@ export function WalletStatusBox(props: WalletStatusBox) {
     return account ? (
         <section className={classNames(classes.currentAccount, props.isDashboard ? classes.dashboardBackground : '')}>
             <WalletIcon
-                size={40}
-                badgeSize={18}
-                networkIcon={networkDescriptor?.icon}
-                providerIcon={providerDescriptor?.icon}
                 classes={{
-                    networkIcon: classes.networkIcon,
-                    providerIcon: classes.providerIcon,
+                    providerIcon: props.isDashboard ? classes.dashboardProvider : classes.twitterProviderBorder,
                 }}
+                size={48}
+                badgeSize={16}
+                networkIcon={providerDescriptor?.icon} // switch providerIcon and networkIcon to meet design
+                providerIcon={networkDescriptor?.icon}
             />
             <div className={classes.accountInfo}>
                 <div className={classes.infoRow}>
@@ -146,7 +159,7 @@ export function WalletStatusBox(props: WalletStatusBox) {
                 </div>
                 <div className={classes.infoRow}>
                     <Typography className={classes.address} variant="body2">
-                        <FormattedAddress address={account} size={9} formatter={Utils?.formatAddress} />
+                        <FormattedAddress address={account} size={4} formatter={Utils?.formatAddress} />
                     </Typography>
                     <Link
                         className={classes.link}
@@ -167,15 +180,20 @@ export function WalletStatusBox(props: WalletStatusBox) {
                 </div>
             </div>
             <section>
-                {providerType === ProviderType.WalletConnect ? (
-                    <Button
+                {providerType === ProviderType.WalletConnect || providerType === ProviderType.Fortmatic ? (
+                    <ActionButtonPromise
                         className={classes.actionButton}
                         color="primary"
                         size="small"
                         variant="contained"
-                        onClick={onDisconnect}>
-                        {t('wallet_status_button_disconnect')}
-                    </Button>
+                        init={t('wallet_status_button_disconnect')}
+                        waiting={t('wallet_status_button_disconnecting')}
+                        failed={t('failed')}
+                        complete={t('done')}
+                        executor={onDisconnect}
+                        completeIcon={<></>}
+                        failIcon={<></>}
+                    />
                 ) : null}
                 <Button
                     className={classNames(classes.actionButton)}

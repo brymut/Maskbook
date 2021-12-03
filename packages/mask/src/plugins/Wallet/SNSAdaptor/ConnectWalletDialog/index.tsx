@@ -63,7 +63,6 @@ export function ConnectWalletDialog(props: ConnectWalletDialogProps) {
 
         // a short time loading makes the user fells better
         await delay(1000)
-
         let account: string | undefined
         let chainId: ChainId | undefined
 
@@ -92,6 +91,9 @@ export function ConnectWalletDialog(props: ConnectWalletDialogProps) {
             case ProviderType.WalletLink:
             case ProviderType.MathWallet:
                 ;({ account, chainId } = await Services.Ethereum.connectInjected())
+                break
+            case ProviderType.Fortmatic:
+                ;({ account, chainId } = await Services.Ethereum.connectFortmatic(expectedChainId))
                 break
             case ProviderType.CustomNetwork:
                 throw new Error('To be implemented.')

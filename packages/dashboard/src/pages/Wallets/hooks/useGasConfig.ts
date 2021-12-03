@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
-import { toHex } from 'web3-utils'
+import { toHex, toWei } from 'web3-utils'
 import BigNumber from 'bignumber.js'
 import { formatGweiToWei, GasOption, isEIP1559Supported, useChainId, useGasPrice } from '@masknet/web3-shared-evm'
 import { useRemoteControlledDialog } from '@masknet/shared'
 import { WalletMessages } from '@masknet/plugin-wallet'
 import { useGasOptions } from '../../../hooks/useGasOptions'
+
+function gweiToWei(gwei: number | string) {
+    return toWei(new BigNumber(gwei).toFixed(9), 'gwei')
+}
 
 export const useGasConfig = (gasLimit: number, minGasLimit: number) => {
     const chainId = useChainId()
@@ -20,7 +24,11 @@ export const useGasConfig = (gasLimit: number, minGasLimit: number) => {
     const gasPrice = customGasPrice || defaultGasPrice
     const { gasOptions } = useGasOptions()
 
-    const { setDialog: setGasSettingDialog } = useRemoteControlledDialog(WalletMessages.events.gasSettingDialogUpdated)
+    const { setDialog: setGasSettingDialog, closeDialog } = useRemoteControlledDialog(
+        WalletMessages.events.gasSettingDialogUpdated,
+    )
+
+    useEffect(() => closeDialog, [closeDialog])
 
     useEffect(() => {
         setGasLimit_(gasLimit)
@@ -50,17 +58,29 @@ export const useGasConfig = (gasLimit: number, minGasLimit: number) => {
         } else {
             setCustomGasPrice((oldVal) => (!oldVal ? (gasOptions.medium as number) : oldVal))
         }
-    }, [is1559Supported, gasOptions])
+    }, [is1559Supported, gasOptions?.medium])
+
+    useEffect(() => {
+        if (!gasOptions) return
+
+        if (is1559Supported) {
+            const gasLevel = gasOptions.medium as Exclude<typeof gasOptions.medium, number>
+            setMaxFee(formatGweiToWei(gasLevel.suggestedMaxFeePerGas))
+            setPriorityFee(formatGweiToWei(gasLevel.suggestedMaxPriorityFeePerGas))
+        } else {
+            setCustomGasPrice(gasOptions.medium as number)
+        }
+    }, [chainId])
 
     const gasConfig = useMemo(() => {
         return is1559Supported
             ? {
                   gas: gasLimit_,
-                  maxFeePerGas: toHex(new BigNumber(maxFee).toFixed()),
-                  maxPriorityFeePerGas: toHex(new BigNumber(priorityFee).toFixed()),
+                  maxFeePerGas: toHex(new BigNumber(maxFee).integerValue().toFixed()),
+                  maxPriorityFeePerGas: toHex(new BigNumber(priorityFee).integerValue().toFixed()),
               }
             : { gas: gasLimit_, gasPrice: new BigNumber(gasPrice).toNumber() }
-    }, [is1559Supported, gasLimit_, maxFee, priorityFee, gasPrice])
+    }, [is1559Supported, gasLimit_, maxFee, priorityFee, gasPrice, chainId])
 
     return {
         gasConfig,

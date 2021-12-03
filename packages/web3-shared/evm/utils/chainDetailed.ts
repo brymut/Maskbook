@@ -26,6 +26,10 @@ export function isInjectedProvider(providerType: ProviderType) {
     return [ProviderType.Coin98, ProviderType.WalletLink, ProviderType.MathWallet].includes(providerType)
 }
 
+export function isFortmaticSupported(chainId: ChainId) {
+    return [ChainId.Mainnet, ChainId.BSC].includes(chainId)
+}
+
 export function getChainDetailed(chainId = ChainId.Mainnet) {
     return CHAINS.find((x) => x.chainId === chainId)
 }
@@ -93,7 +97,7 @@ export const getChainIdFromNetworkType = createLookupTableResolver<NetworkType, 
     ChainId.Mainnet,
 )
 
-export function getNetworkTypeFromChainId(chainId: ChainId) {
+export function getNetworkTypeFromChainId(chainId: ChainId, value?: boolean) {
     const map: Record<NetworkType, string> = {
         [NetworkType.Ethereum]: 'ETH',
         [NetworkType.Binance]: 'BSC',
@@ -106,6 +110,7 @@ export function getNetworkTypeFromChainId(chainId: ChainId) {
         if (value === chainDetailed?.chain) return true
         return false
     })
+    if (value) return entry?.[1] as NetworkType | undefined
     return entry?.[0] as NetworkType | undefined
 }
 export function getChainFromChainId(chainId: ChainId) {
